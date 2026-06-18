@@ -25,6 +25,7 @@ import net.momirealms.customfishing.api.mechanic.competition.CompetitionSchedule
 import net.momirealms.customfishing.api.mechanic.competition.FishingCompetition;
 import net.momirealms.customfishing.api.mechanic.config.ConfigManager;
 import net.momirealms.customfishing.api.mechanic.context.Context;
+import net.momirealms.customfishing.bukkit.competition.ranking.RedisRankingProvider;
 import net.momirealms.customfishing.bukkit.storage.method.database.nosql.RedisManager;
 import net.momirealms.customfishing.common.plugin.scheduler.SchedulerTask;
 import org.bukkit.Bukkit;
@@ -34,7 +35,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -125,7 +128,7 @@ public class BukkitCompetitionManager implements CompetitionManager {
      * Checks the timer for the next competition and starts it if necessary.
      */
     public void timerCheck() {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = currentDateTime();
         CompetitionSchedule competitionSchedule = new CompetitionSchedule(
                 now.getDayOfWeek().getValue(),
                 now.getHour(),
@@ -150,6 +153,16 @@ public class BukkitCompetitionManager implements CompetitionManager {
         if (config != null) {
             startCompetition(config, false, null);
         }
+    }
+
+    private LocalDateTime currentDateTime() {
+        if (ConfigManager.redisRanking()) {
+            return LocalDateTime.ofInstant(
+                    Instant.ofEpochSecond(RedisRankingProvider.currentTimeSeconds()),
+                    ZoneId.systemDefault()
+            );
+        }
+        return LocalDateTime.now();
     }
 
     @Override

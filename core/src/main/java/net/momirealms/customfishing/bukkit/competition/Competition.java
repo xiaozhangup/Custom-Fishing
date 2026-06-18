@@ -79,7 +79,7 @@ public class Competition implements FishingCompetition {
     public void start(boolean triggerEvent) {
         this.progress = 1;
         this.remainingTime = this.config.durationInSeconds();
-        this.startTime = Instant.now().getEpochSecond();
+        this.startTime = ConfigManager.redisRanking() ? RedisRankingProvider.currentTimeSeconds() : Instant.now().getEpochSecond();
 
         this.arrangeTimerTask();
         if (this.config.bossBarConfig() != null && this.config.bossBarConfig().enabled()) {
@@ -172,8 +172,8 @@ public class Competition implements FishingCompetition {
             });
         }
 
-        // 1 seconds delay for other servers to read the redis data
-        plugin.getScheduler().asyncLater(this.rankingProvider::clear, 1, TimeUnit.SECONDS);
+        // 5 seconds delay for other servers to read the redis data
+        plugin.getScheduler().asyncLater(this.rankingProvider::clear, 5, TimeUnit.SECONDS);
     }
 
     private void arrangeTimerTask() {
@@ -244,7 +244,7 @@ public class Competition implements FishingCompetition {
      * @return {@code true} if the remaining time becomes zero or less, indicating the competition has ended.
      */
     private boolean decreaseTime() {
-        long current = Instant.now().getEpochSecond();
+        long current = ConfigManager.redisRanking() ? RedisRankingProvider.currentTimeSeconds() : Instant.now().getEpochSecond();
         int duration = config.durationInSeconds();
         remainingTime = (int) (duration - (current - startTime));
         progress = (float) remainingTime / duration;

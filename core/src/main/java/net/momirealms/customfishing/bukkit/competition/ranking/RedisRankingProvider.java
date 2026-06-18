@@ -29,6 +29,11 @@ import java.util.Iterator;
 import java.util.List;
 
 public class RedisRankingProvider implements RankingProvider {
+    public static long currentTimeSeconds() {
+        try (Jedis jedis = RedisManager.getInstance().getJedis()) {
+            return Long.parseLong(jedis.time().get(0));
+        }
+    }
 
     /**
      * Clears the ranking data by removing all players and scores.
