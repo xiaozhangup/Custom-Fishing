@@ -43,6 +43,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 public class BukkitCompetitionManager implements CompetitionManager {
+    private static final ZoneId COMPETITION_TIME_ZONE = ZoneId.of("Asia/Shanghai");
+
     private final BukkitCustomFishingPlugin plugin;
     private final NavigableMap<CompetitionSchedule, CompetitionConfig> timeConfigMap;
     private final HashMap<String, CompetitionConfig> commandConfigMap;
@@ -159,10 +161,10 @@ public class BukkitCompetitionManager implements CompetitionManager {
         if (ConfigManager.redisRanking()) {
             return LocalDateTime.ofInstant(
                     Instant.ofEpochSecond(RedisRankingProvider.currentTimeSeconds()),
-                    ZoneId.systemDefault()
+                    COMPETITION_TIME_ZONE
             );
         }
-        return LocalDateTime.now();
+        return LocalDateTime.ofInstant(Instant.now(), COMPETITION_TIME_ZONE);
     }
 
     @Override
