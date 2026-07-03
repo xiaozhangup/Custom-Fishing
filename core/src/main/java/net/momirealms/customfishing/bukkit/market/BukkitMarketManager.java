@@ -418,7 +418,7 @@ public class BukkitMarketManager implements MarketManager, Listener {
 
                 List<ItemStack> toSell = new ArrayList<>();
                 List<Double> prices = new ArrayList<>();
-                Pair<Integer, Double> pair = getItemsToSell(gui.context, gui.getItemsInGUI(), (i, p) -> {
+                Pair<Integer, Double> pair = getItemsToSell(gui.context, itemStacksToSell, (i, p) -> {
                     toSell.add(i);
                     prices.add(p);
                 });
@@ -457,15 +457,17 @@ public class BukkitMarketManager implements MarketManager, Listener {
             // Handle interactions with the player's inventory
             ItemStack current = event.getCurrentItem();
             if (!allowItemWithNoPrice) {
-                double price = getItemPrice(gui.context, current, (i, p) -> {});
-                if (price <= 0) {
-                    event.setCancelled(true);
-                    return;
+                if (current != null && !current.isEmpty()) {
+                    double price = getItemPrice(gui.context, current, (i, p) -> {});
+                    if (price <= 0) {
+                        event.setCancelled(true);
+                        return;
+                    }
                 }
             }
 
-            if ((event.getClick() == ClickType.SHIFT_LEFT || event.getClick() == ClickType.SHIFT_RIGHT)
-            && (current != null && current.getType() != Material.AIR)) {
+            if ((event.getClick() == ClickType.SHIFT_LEFT || event.getClick() == ClickType.SHIFT_RIGHT) &&
+                    (current != null && current.getType() != Material.AIR)) {
                 event.setCancelled(true);
                 MarketGUIElement element = gui.getElement(itemSlot);
                 if (element == null) return;
