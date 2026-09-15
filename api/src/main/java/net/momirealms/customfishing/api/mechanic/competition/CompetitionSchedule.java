@@ -120,6 +120,8 @@ public class CompetitionSchedule implements Comparable<CompetitionSchedule> {
             return false;
         if (minute != other.minute)
             return false;
+        if (second != other.second)
+            return false;
         return true;
     }
 

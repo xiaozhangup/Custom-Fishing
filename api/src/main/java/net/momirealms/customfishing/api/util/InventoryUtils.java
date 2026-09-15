@@ -108,7 +108,7 @@ public class InventoryUtils {
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
                 }
-                return null;
+                return new ItemStack[0];
             }
         }
         try {

@@ -102,7 +102,7 @@ public class CompetitionPlayer implements Comparable<CompetitionPlayer> {
         } else if (another.getTime() != this.time) {
             return (another.getTime() > this.time) ? 1 : -1;
         } else {
-            return 0;
+            return this.player.compareTo(another.player);
         }
     }
 

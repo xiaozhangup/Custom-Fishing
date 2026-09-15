@@ -77,7 +77,11 @@ public class LavaFishingMechanic implements HookMechanic {
         if (fluidData.getFluidType() == Fluid.LAVA || fluidData.getFluidType() == Fluid.FLOWING_LAVA) {
             lavaHeight = (float) (fluidData.getLevel() * 0.125);
         }
-        return lavaHeight > 0 && location.getY() % 1 <= lavaHeight;
+        double hookY = location.getY();
+        if (hookY < 0) {
+            hookY += Math.abs(Math.floor(hookY));
+        }
+        return lavaHeight > 0 && hookY % 1 <= lavaHeight;
     }
 
     @Override

@@ -219,7 +219,12 @@ public class BukkitBagManager implements BagManager, Listener {
             if (event.getAction() != InventoryAction.HOTBAR_SWAP && event.getAction() != InventoryAction.HOTBAR_MOVE_AND_READD) {
                 return;
             }
-            movedItem = event.getWhoClicked().getInventory().getItem(event.getHotbarButton());
+            int hotbarButton = event.getHotbarButton();
+            // can be -1 when the swap wasn't triggered by a number key (e.g. offhand swap)
+            if (hotbarButton < 0) {
+                return;
+            }
+            movedItem = event.getWhoClicked().getInventory().getItem(hotbarButton);
         }
         if (movedItem == null || movedItem.getType() == Material.AIR || bagWhiteListItems.contains(movedItem.getType()))
             return;

@@ -35,6 +35,7 @@ import net.momirealms.customfishing.api.mechanic.requirement.RequirementManager;
 import net.momirealms.customfishing.api.storage.data.EarningData;
 import net.momirealms.customfishing.api.storage.user.UserData;
 import net.momirealms.customfishing.api.util.EventUtils;
+import net.momirealms.customfishing.api.util.MiscUtils;
 import net.momirealms.customfishing.bukkit.config.BukkitConfigManager;
 import net.momirealms.customfishing.bukkit.item.BukkitItemFactory;
 import net.momirealms.customfishing.common.item.Item;
@@ -508,7 +509,7 @@ public class BukkitMarketManager implements MarketManager, Listener {
             return 0;
 
         Item<ItemStack> wrapped = ((BukkitItemFactory) plugin.getItemManager().getFactory()).wrap(itemStack);
-        double price = (double) wrapped.getTag("Price").orElse(0d);
+        double price = MiscUtils.getAsDouble(wrapped.getTag("Price").orElse(0d));
         if (price != 0) {
             // If a custom price is defined in the ItemStack's NBT data, use it.
             double totalPrice = price * itemStack.getAmount();
